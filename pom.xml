@@ -37,11 +37,11 @@
           <scope>compile</scope>
         </dependency>
 
-        <!-- JUnit 4 -->
+        <!-- JUnit 6 -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
           
