@@ -2,6 +2,7 @@
  *
  */
 package iscteiul.ista.battleship;
+import java.lang.reflect.Field;
 
 public class Caravel extends Ship {
     private static final Integer SIZE = 2;
