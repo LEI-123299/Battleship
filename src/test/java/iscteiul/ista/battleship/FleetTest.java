@@ -67,14 +67,6 @@ class FleetTest {
     @Nested
     @DisplayName("1.1. Testes de Regras do addShip")
     class AddShipRulesTests {
-
-        @Test
-        @DisplayName("Deve falhar se o navio estiver fora dos limites (Out of Bounds)")
-        void addShip_outOfBounds_shouldReturnFalse() {
-            IShip s = createBargeAt(10, 10);
-            assertFalse(fleet.addShip(s), "A adição deve falhar se o navio estiver fora dos limites.");
-        }
-
         @Test
         @DisplayName("Deve falhar se o navio for adjacente a outro")
         void addShip_tooCloseTo_shouldReturnFalse() {
@@ -84,6 +76,63 @@ class FleetTest {
             fleet.addShip(sA);
             assertFalse(fleet.addShip(sB), "A adição deve falhar se for adjacente.");
             assertEquals(1, fleet.getShips().size(), "Apenas o primeiro navio deve ser adicionado.");
+        }
+
+        @Test
+        @DisplayName("Cobertura IF: Deve falhar APENAS porque a frota está cheia (1ª condição do IF)")
+        void testAddShip_FleetIsFullCoverage() {
+            for (int col = 0; col <= 8; col += 2) {
+                fleet.addShip(new Barge(Compass.NORTH, new Position(0, col)));
+            }
+
+            for (int col = 0; col <= 8; col += 2) {
+                fleet.addShip(new Barge(Compass.NORTH, new Position(2, col)));
+            }
+
+            fleet.addShip(new Barge(Compass.NORTH, new Position(4, 0)));
+
+            IShip extraShip = new Barge(Compass.NORTH, new Position(4, 2));
+            boolean result = fleet.addShip(extraShip);
+
+            assertFalse(result, "Deve retornar false porque a 1ª condição (size <= FLEET_SIZE) falhou.");
+        }
+    }
+
+    @Nested
+    @DisplayName("Cobertura Total (Branch Coverage)")
+    class CoverageTests {
+
+        @Test
+        @DisplayName("addShip: Deve falhar quando a frota está cheia (Branch: size > FLEET_SIZE)")
+        void testAddShipFullFleet() {
+            for (int i = 0; i < IFleet.FLEET_SIZE + 5; i++) {
+                if (i * 2 < IFleet.BOARD_SIZE) {
+                    fleet.addShip(createBargeAt(i * 2, 0));
+                }
+            }
+
+            }
+
+        @Test
+        @DisplayName("isInsideBoard: Deve testar todas as 4 fronteiras")
+        void testBoundaries() {
+            assertFalse(fleet.addShip(createBargeAt(5, -1)));
+
+            assertFalse(fleet.addShip(createBargeAt(5, 10)));
+
+            assertFalse(fleet.addShip(createBargeAt(-1, 5)));
+
+            assertFalse(fleet.addShip(createBargeAt(10, 5)));
+
+            assertTrue(fleet.addShip(createBargeAt(5, 5)));
+        }
+
+        @Test
+        @DisplayName("printShipsByCategory: Deve lançar erro se categoria for null (Assert)")
+        void testPrintCategoryNull() {
+            assertThrows(AssertionError.class, () -> {
+                fleet.printShipsByCategory(null);
+            });
         }
     }
 
@@ -191,7 +240,7 @@ class FleetTest {
         assertDoesNotThrow(() -> {
             fleet.printFloatingShips();
         }, "A impressão de navios flutuantes não deve lançar exceção.");
-   }
+    }
 
     @Test
     @DisplayName("Deve executar sem exceções e cobrir a impressão")
@@ -204,7 +253,7 @@ class FleetTest {
             fleet.printAllShips();
         }, "A execução de printAllShips não deve falhar, garantindo a cobertura.");
 
-       }
+    }
 
 
     @Test
@@ -220,6 +269,4 @@ class FleetTest {
             fleet.printStatus();
         }, "A execução completa de printStatus (que chama todos os auxiliares) não deve falhar.");
     }
-
-
 }

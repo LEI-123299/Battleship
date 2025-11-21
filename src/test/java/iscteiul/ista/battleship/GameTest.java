@@ -17,9 +17,9 @@ class GameTest {
     private Fleet fleet;
     private IPosition pos0_0;
     private IPosition pos1_1;
-    private IPosition invalidPos10_10;
+    private IPosition invalidPos11_11;
 
-     private IShip createBargeAt(int row, int col) {
+    private IShip createBargeAt(int row, int col) {
         return new Barge(Compass.NORTH, new Position(row, col));
     }
 
@@ -27,16 +27,16 @@ class GameTest {
         return new Frigate(Compass.NORTH, new Position(row, col));
     }
 
-     @BeforeEach
+    @BeforeEach
     void setUp() {
         fleet = new Fleet();
         game = new Game(fleet);
 
         pos0_0 = new Position(0, 0);
         pos1_1 = new Position(1, 1);
-        invalidPos10_10 = new Position(11, 11);
+        invalidPos11_11 = new Position(11, 11);
 
-         try {
+        try {
             initializePrivateField(game, "countHits", 0);
             initializePrivateField(game, "countSinks", 0);
             if (getPrivateField(game, "countInvalidShots") == null) initializePrivateField(game, "countInvalidShots", 0);
@@ -121,7 +121,7 @@ class GameTest {
         @Test
         @DisplayName("1.5. Tiro Inválido")
         void fire_invalidShot_shouldIncrementInvalidCount() {
-            IShip result = game.fire(invalidPos10_10);
+            IShip result = game.fire(invalidPos11_11);
 
             assertAll("Tiro Inválido",
                     () -> assertNull(result),
@@ -135,7 +135,7 @@ class GameTest {
     @DisplayName("2.1. getShots")
     void getShots() {
         game.fire(pos0_0);
-        game.fire(invalidPos10_10);
+        game.fire(invalidPos11_11);
         game.fire(pos0_0);
 
         List<IPosition> shots = game.getShots();
@@ -180,5 +180,29 @@ class GameTest {
     void printFleet() {
         fleet.addShip(createFrigateAt(1, 1));
         assertDoesNotThrow(() -> game.printFleet());
+    }
+
+
+    @Nested
+    @DisplayName("4. Cobertura de Ramos e Limites (Branch Coverage)")
+    class BranchCoverageTests {
+
+        @Test
+        @DisplayName("validShot: Deve testar todas as condições de fronteira do tabuleiro")
+        void testValidShotBoundaries() {
+            game.fire(new Position(-1, 5));
+
+            game.fire(new Position(11, 5));
+
+            game.fire(new Position(5, -1));
+
+            game.fire(new Position(5, 11));
+
+            game.fire(new Position(10, 10));
+
+            game.fire(new Position(0, 0));
+
+            assertEquals(4, game.getInvalidShots(), "Devem existir exatamente 4 tiros inválidos neste teste.");
+        }
     }
 }
