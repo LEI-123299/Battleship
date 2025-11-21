@@ -1,9 +1,20 @@
 # Release checklist
 
 ## Testing checklists
-- S1 Release checklist
-- S2 Automated tests checklist
+- [passed @Diogo] S1 Release checklist
+- [passed @Diogo] S2 Automated tests checklist
+
+---
 
 ## Unit tests
-- S3 Ships test case
-- S4 Tasks test case
+- [passed @Igor] ShipTest
+- [passed @Tomás] BargeTest [TMS-C3]
+- [passed @Tomás] CaravelTest [TMS-C4]
+- [passed @Tomás] CarrackTest [TMS-C5]
+- [passed @Igor] FrigateTest [TMS-C6]
+- [passed @Igor] GalleonTest [TMS-C7]
+- [passed @Diogo] PositionTest
+- [passed @Diogo] CompassTest
+- [passed @Diogo] FleetTest
+- [passed @Diogo] GameTest
+- [passed @Diogo] TasksTest [TMS-C8]
